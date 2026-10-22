@@ -56,3 +56,15 @@ When I click on element located by `cssSelector(.header-search__button)`
 When I enter `AI` in field located by `id(new_form_search)`
 When I click on element located by `cssSelector(.custom-search-button)`
 Then `${current-page-url}` matches `.*/search\?q=AI.*`
+
+Scenario: Verify required fields validation on the contact form
+
+Given I am on page with URL `https://www.epam.com/about/who-we-are/contact`
+When I scroll element located by `cssSelector(.button-submit .button-ui)` into view
+When I click on element located by `cssSelector(.button-submit .button-ui)`
+When I execute javascript `return ['user_first_name','user_last_name','user_email','user_phone','user_comment_how_hear_about'].map(function(n){return document.querySelector('[name="'+n+'"]').closest('[data-required-msg]').querySelector('.validation-text').textContent.trim();}).join('|')` and save result to scenario variable `errorsBefore`
+Then `${errorsBefore}` is = `This is a required field|This is a required field|This is a required field|This is a required field|This is a required field`
+When I enter `Test` in field located by `xpath(//input[@name='user_first_name'])`
+When I click on element located by `cssSelector(.button-submit .button-ui)`
+When I execute javascript `return 'error=[' + document.querySelector('[name="user_first_name"]').closest('[data-required-msg]').querySelector('.validation-text').textContent.trim() + ']'` and save result to scenario variable `firstNameErrorAfter`
+Then `${firstNameErrorAfter}` is = `error=[]`
