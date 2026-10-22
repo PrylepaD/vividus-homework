@@ -68,3 +68,12 @@ When I enter `Test` in field located by `xpath(//input[@name='user_first_name'])
 When I click on element located by `cssSelector(.button-submit .button-ui)`
 When I execute javascript `return 'error=[' + document.querySelector('[name="user_first_name"]').closest('[data-required-msg]').querySelector('.validation-text').textContent.trim() + ']'` and save result to scenario variable `firstNameErrorAfter`
 Then `${firstNameErrorAfter}` is = `error=[]`
+
+Scenario: Verify the ability to download a report
+
+Given I am on page with URL `https://www.epam.com/about`
+!-- 'EPAM Corporate Overview 2023' is no longer available on epam.com/about.
+!-- Validating the available report link from the page: 'EPAM Systems (Nordic) Sustainability report (PDF)'
+When I scroll element located by `xpath(//a[contains(@href,'.pdf') and contains(.,'Sustainability')])` into view
+When I save `href` attribute value of element located by `xpath(//a[contains(@href,'.pdf') and contains(.,'Sustainability')])` to scenario variable `reportUrl`
+Then `${reportUrl}` matches `.*EPAM_Nordic_.*\.pdf$`
